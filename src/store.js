@@ -225,7 +225,7 @@ export function reset() {
   return JSON.parse(JSON.stringify(defaultState));
 }
 
-// 빈 보드 — bmCategories는 북마크 추가 폼이 카테고리를 전제하므로 기본 분류만 남긴다
+// 빈 보드 — 기본 북마크 분류는 시작용으로 남긴다 (북마크 화면에서 편집·삭제 가능)
 export const emptyState = {
   version: 3,
   me: { name: "나", initial: "나", color: "var(--accent)" },

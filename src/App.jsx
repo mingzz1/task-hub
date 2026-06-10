@@ -132,6 +132,16 @@ export default function App() {
   const addBookmark = (data) => setState((s) => ({ ...s, bookmarks: [{ id: uid(), taskIds: [], ...data }, ...s.bookmarks] }));
   const deleteBookmark = (id) => setState((s) => ({ ...s, bookmarks: s.bookmarks.filter((b) => b.id !== id), tasks: s.tasks.map((t) => ({ ...t, bookmarkIds: (t.bookmarkIds || []).filter((x) => x !== id) })) }));
 
+  // ---- bookmark categories ----
+  const addBmCategory = (data) => { const id = uid(); setState((s) => ({ ...s, bmCategories: [...s.bmCategories, { id, ...data }] })); return id; };
+  const updateBmCategory = (id, patch) => setState((s) => ({ ...s, bmCategories: s.bmCategories.map((c) => c.id === id ? { ...c, ...patch } : c) }));
+  // 카테고리 삭제 시 소속 북마크는 미분류(category: null)로 남긴다
+  const deleteBmCategory = (id) => setState((s) => ({
+    ...s,
+    bmCategories: s.bmCategories.filter((c) => c.id !== id),
+    bookmarks: s.bookmarks.map((b) => b.category === id ? { ...b, category: null } : b),
+  }));
+
   const clearData = () => { if (confirm("모든 데이터를 비울까요? 업무·미팅·북마크가 전부 삭제됩니다.\n필요하면 먼저 '데이터 내보내기'로 백업하세요.")) setState(store.clearAll()); };
 
   // ---- backup: export / import (JSON) ----
@@ -271,7 +281,10 @@ export default function App() {
           onAddNote: addNote, onDeleteNote: deleteNote,
           onAddSession: addSession, onUpdateSession: updateSession, onDeleteSession: deleteSession,
         }) : null,
-        view === "bookmarks" ? React.createElement(BookmarksView, { state, query, onAddBookmark: addBookmark, onDeleteBookmark: deleteBookmark, onOpenTask: openTask }) : null,
+        view === "bookmarks" ? React.createElement(BookmarksView, {
+          state, query, onAddBookmark: addBookmark, onDeleteBookmark: deleteBookmark, onOpenTask: openTask,
+          onAddCategory: addBmCategory, onUpdateCategory: updateBmCategory, onDeleteCategory: deleteBmCategory,
+        }) : null,
       ),
     ),
 
