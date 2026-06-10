@@ -103,7 +103,8 @@ export function TaskDetail({ task, state, onUpdate, onDelete, onClose }) {
             React.createElement("input", {
               className: "input", style: { width: 130, padding: "4px 10px" }, placeholder: "+ 이름 추가", value: peopleInput,
               onChange: (e) => setPeopleInput(e.target.value),
-              onKeyDown: (e) => { if (e.key === "Enter") addPerson(); },
+              // IME 조합 중 Enter는 keydown이 중복 발생하므로 무시
+              onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) addPerson(); },
             }))),
 
         // done → impact block
@@ -134,7 +135,7 @@ export function TaskDetail({ task, state, onUpdate, onDelete, onClose }) {
               React.createElement("button", { className: "check-del", onClick: () => setChecklist(checklist.filter((x) => x.id !== c.id)) }, React.createElement(Icons.Trash, { size: 13 })))),
             React.createElement("div", { className: "check-row" },
               React.createElement("span", { className: "check-box", style: { borderStyle: "dashed" } }),
-              React.createElement("input", { className: "check-text", placeholder: "+ 항목 추가", value: newCheck, onChange: (e) => setNewCheck(e.target.value), onKeyDown: (e) => { if (e.key === "Enter") addCheck(); } })))),
+              React.createElement("input", { className: "check-text", placeholder: "+ 항목 추가", value: newCheck, onChange: (e) => setNewCheck(e.target.value), onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) addCheck(); } })))),
 
         // notes
         React.createElement("div", { className: "field" },

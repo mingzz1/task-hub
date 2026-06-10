@@ -102,7 +102,7 @@ export function BookmarksView({ state, query, onAddBookmark, onDeleteBookmark, o
       React.createElement("input", {
         className: "input", style: { width: 160, padding: "4px 10px" }, value: c.name, autoFocus: true,
         onChange: (e) => onUpdateCategory(c.id, { name: e.target.value }),
-        onKeyDown: (e) => { if (e.key === "Enter" || e.key === "Escape") setEditCatId(null); },
+        onKeyDown: (e) => { if ((e.key === "Enter" && !e.nativeEvent.isComposing) || e.key === "Escape") setEditCatId(null); },
       }),
       React.createElement(Swatches, { value: c.color, onPick: (col) => onUpdateCategory(c.id, { color: col }) }),
       React.createElement("button", { className: "btn btn-primary btn-sm", onClick: () => setEditCatId(null) }, "완료"));
@@ -125,7 +125,7 @@ export function BookmarksView({ state, query, onAddBookmark, onDeleteBookmark, o
       React.createElement("input", {
         className: "input", placeholder: "카테고리 이름", value: catForm.name, autoFocus: true,
         onChange: (e) => setCatForm({ ...catForm, name: e.target.value }),
-        onKeyDown: (e) => { if (e.key === "Enter") submitCat(); },
+        onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submitCat(); },
       }),
       React.createElement(Swatches, { value: catForm.color, onPick: (col) => setCatForm({ ...catForm, color: col }) }),
       React.createElement("div", { style: { display: "flex", justifyContent: "flex-end", gap: 8 } },

@@ -114,7 +114,7 @@ export function MeetingsView({ state, activeId, setActiveId, onAddMeeting, onUpd
       React.createElement("div", { className: "section-label" }, React.createElement(Icons.Message, { size: 15 }), "이 미팅에서 물어볼 것"),
       React.createElement("div", { className: "add-agenda-row" },
         React.createElement(Icons.Plus, { size: 15 }),
-        React.createElement("input", { className: "agenda-input", placeholder: "물어볼 것 / 안건 추가하고 Enter", value: agendaDraft, onChange: (e) => setAgendaDraft(e.target.value), onKeyDown: (e) => { if (e.key === "Enter") submitAgenda(); } })),
+        React.createElement("input", { className: "agenda-input", placeholder: "물어볼 것 / 안건 추가하고 Enter", value: agendaDraft, onChange: (e) => setAgendaDraft(e.target.value), onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submitAgenda(); } })),
       openAgenda.length === 0 && doneAgenda.length === 0 ? React.createElement("div", { className: "muted", style: { fontSize: 12.5, padding: "8px 4px" } }, "다음 미팅에서 물어볼 것을 모아두세요.") : null,
       openAgenda.map((a) => React.createElement("div", { className: "agenda-item", key: a.id },
         React.createElement("button", { className: "agenda-check", onClick: () => onToggleAgenda(meeting.id, a.id), title: "다뤘음" }),
