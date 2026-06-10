@@ -140,7 +140,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `manager-hub-backup-${today}.json`;
+    a.download = `task-hub-backup-${today}.json`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -154,7 +154,7 @@ export default function App() {
       let parsed;
       try { parsed = JSON.parse(reader.result); }
       catch { alert("JSON 파일을 읽을 수 없습니다. 파일이 손상되었거나 형식이 다릅니다."); return; }
-      if (!isValidBackup(parsed)) { alert("Manager Hub 백업 파일이 아니거나 버전이 맞지 않습니다."); return; }
+      if (!isValidBackup(parsed)) { alert("Task Hub 백업 파일이 아니거나 버전이 맞지 않습니다."); return; }
       if (!confirm("현재 데이터를 가져온 파일 내용으로 교체할까요?\n(교체 전 '데이터 내보내기'로 백업해 두는 것을 권장합니다)")) return;
       setOpenId(null);
       setMeetingId(null);
@@ -192,9 +192,9 @@ export default function App() {
     // ---------- Sidebar ----------
     React.createElement("aside", { className: "sidebar" },
       React.createElement("div", { className: "brand" },
-        React.createElement("div", { className: "brand-mark" }, "M"),
+        React.createElement("div", { className: "brand-mark" }, "T"),
         React.createElement("div", null,
-          React.createElement("div", { className: "brand-name" }, "Manager Hub"),
+          React.createElement("div", { className: "brand-name" }, "Task Hub"),
           React.createElement("div", { className: "brand-sub" }, "task & people"))),
       React.createElement("div", { className: "nav-group-label" }, "워크스페이스"),
       NAV.map((n) => React.createElement("button", {
