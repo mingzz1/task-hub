@@ -100,9 +100,16 @@ export const PriorityDot = ({ p, withLabel }) => {
     withLabel ? React.createElement("span", { style: { fontSize: 11 } }, cfg.label) : null);
 };
 
+// 이름에서 고정 색상 유도 — 샘플 인물 외의 사람도 회색이 아닌 고유 색을 갖도록
+function hueOf(name) {
+  let h = 0;
+  for (const ch of name) h = (h * 31 + ch.codePointAt(0)) % 360;
+  return h;
+}
+
 export const Avatar = ({ name, sm }) => {
-  const color = PEOPLE[name] || "var(--ink-3)";
-  const txt = name ? name.slice(0, 2) : "?";
+  const color = PEOPLE[name] || (name ? `oklch(0.55 0.12 ${hueOf(name)})` : "var(--ink-3)");
+  const txt = name ? Array.from(name)[0] : "?";
   return React.createElement("span", { className: "avatar" + (sm ? " sm" : ""), style: { background: color }, title: name }, txt);
 };
 

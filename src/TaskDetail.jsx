@@ -1,6 +1,6 @@
 /* TaskDetail — slide-in editor sheet */
 import React, { useState } from "react";
-import { COLUMNS, PEOPLE, uid, today } from "./store.js";
+import { COLUMNS, uid, today } from "./store.js";
 import { DueBadge, Avatar } from "./primitives.jsx";
 import { Icons } from "./icons.jsx";
 
@@ -19,7 +19,8 @@ export function TaskDetail({ task, state, onUpdate, onDelete, onClose }) {
 
   const col = COLUMNS.find((c) => c.id === task.status);
   const linkedBms = (task.bookmarkIds || []).map((id) => state.bookmarks.find((b) => b.id === id)).filter(Boolean);
-  const knownPeople = Array.from(new Set([...Object.keys(PEOPLE), ...task.people]));
+  // 후보 목록은 실제 업무들에 쓰인 이름에서 수집 — 선택 해제하면 다른 곳에 안 쓰인 이름은 사라진다
+  const knownPeople = Array.from(new Set([...state.tasks.flatMap((t) => t.people || []), ...task.people]));
   const checklist = task.checklist || [];
 
   const setChecklist = (cl) => onUpdate({ checklist: cl });
