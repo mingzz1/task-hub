@@ -225,6 +225,19 @@ export function reset() {
   return JSON.parse(JSON.stringify(defaultState));
 }
 
+// 빈 보드 — bmCategories는 북마크 추가 폼이 카테고리를 전제하므로 기본 분류만 남긴다
+export const emptyState = {
+  version: 3,
+  me: { name: "나", initial: "나", color: "var(--accent)" },
+  tasks: [], projects: [], meetings: [], bookmarks: [], bmCategories,
+  quarter: `${TODAY.getFullYear()} Q${Math.floor(TODAY.getMonth() / 3) + 1}`,
+};
+
+export function clearAll() {
+  localStorage.removeItem(STORE_KEY);
+  return JSON.parse(JSON.stringify(emptyState));
+}
+
 // 백업 파일(JSON)이 이 앱의 상태인지 최소한으로 검증
 export function isValidBackup(parsed) {
   return !!parsed

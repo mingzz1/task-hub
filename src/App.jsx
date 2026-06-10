@@ -132,7 +132,7 @@ export default function App() {
   const addBookmark = (data) => setState((s) => ({ ...s, bookmarks: [{ id: uid(), taskIds: [], ...data }, ...s.bookmarks] }));
   const deleteBookmark = (id) => setState((s) => ({ ...s, bookmarks: s.bookmarks.filter((b) => b.id !== id), tasks: s.tasks.map((t) => ({ ...t, bookmarkIds: (t.bookmarkIds || []).filter((x) => x !== id) })) }));
 
-  const resetData = () => { if (confirm("샘플 데이터로 초기화할까요? 변경사항이 모두 사라집니다.")) setState(store.reset()); };
+  const clearData = () => { if (confirm("모든 데이터를 비울까요? 업무·미팅·북마크가 전부 삭제됩니다.\n필요하면 먼저 '데이터 내보내기'로 백업하세요.")) setState(store.clearAll()); };
 
   // ---- backup: export / import (JSON) ----
   const exportData = () => {
@@ -220,8 +220,8 @@ export default function App() {
           ref: importRef, type: "file", accept: "application/json,.json", style: { display: "none" },
           onChange: (e) => { importData(e.target.files[0]); e.target.value = ""; },
         }),
-        React.createElement("button", { className: "nav-item", onClick: resetData, style: { fontSize: 12 } },
-          React.createElement(Icons.Reset, { size: 15 }), "샘플 데이터 초기화")),
+        React.createElement("button", { className: "nav-item", onClick: clearData, style: { fontSize: 12 } },
+          React.createElement(Icons.Trash, { size: 15 }), "모든 데이터 비우기")),
     ),
 
     // ---------- Main ----------
