@@ -5,6 +5,18 @@
 
 모든 데이터는 브라우저 localStorage에 저장되며, 외부로 전송되지 않는다.
 
+![업무 보드](docs/screenshots/board.png)
+
+## 화면
+
+| 캘린더 | 미팅 · 1:1 |
+|---|---|
+| ![캘린더](docs/screenshots/calendar.png) | ![미팅](docs/screenshots/meetings.png) |
+
+| 완료 · 성과 | 북마크 |
+|---|---|
+| ![완료·성과](docs/screenshots/review.png) | ![북마크](docs/screenshots/bookmarks.png) |
+
 ## 시작하기
 
 Node.js 18 이상이 필요하다. ([nodejs.org](https://nodejs.org) 또는 `brew install node`)
@@ -65,6 +77,8 @@ src/
   TaskDetail.jsx    업무 상세 편집 시트
   TaskCard.jsx      보드 카드
 legacy/             이전 무빌드(CDN) 버전 보관용
+docs/screenshots/   README 스크린샷
+scripts/screenshots.mjs  스크린샷 자동 캡처 (dev 서버 실행 중에 node로 실행)
 ```
 
 ## 기술 스택
