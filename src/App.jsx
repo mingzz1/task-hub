@@ -181,7 +181,7 @@ export default function App() {
     over: active.filter((t) => t.due && dayDiff(t.due) < 0).length,
     today: active.filter((t) => t.due && dayDiff(t.due) === 0).length,
     week: active.filter((t) => t.due && dayDiff(t.due) >= 0 && dayDiff(t.due) <= 7).length,
-    blocked: state.tasks.filter((t) => t.status === "waiting" || t.status === "toask").length,
+    blocked: state.tasks.filter((t) => t.status === "waiting").length,
     progress: state.tasks.filter((t) => t.status === "inprogress").length,
   };
   const navCount = (id) => {
@@ -219,7 +219,7 @@ export default function App() {
       React.createElement("div", { className: "nav-group-label" }, "지금 막혀있는 것"),
       React.createElement("button", { className: "nav-item" + (filter === "blocked" && view === "board" ? " active" : ""), onClick: () => goFilter("blocked") },
         React.createElement(Icons.Inbox, { size: 17 }),
-        React.createElement("span", null, "응답 대기 · 질문"),
+        React.createElement("span", null, "응답 대기"),
         React.createElement("span", { className: "count" }, stats.blocked)),
 
       React.createElement("div", { className: "sidebar-foot" },

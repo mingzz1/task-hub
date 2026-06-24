@@ -10,7 +10,7 @@ function matchesFilter(t, filter) {
   if (filter === "today") return t.due && dayDiff(t.due) === 0 && t.status !== "done";
   if (filter === "week") return t.due && dayDiff(t.due) >= 0 && dayDiff(t.due) <= 7 && t.status !== "done";
   if (filter === "over") return t.due && dayDiff(t.due) < 0 && t.status !== "done";
-  if (filter === "blocked") return (t.status === "waiting" || t.status === "toask");
+  if (filter === "blocked") return t.status === "waiting";
   return true;
 }
 

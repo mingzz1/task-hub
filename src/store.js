@@ -35,7 +35,6 @@ export const COLUMNS = [
   { id: "backlog", label: "백로그", hint: "해야 할 것", color: "var(--st-backlog)", bg: "var(--st-backlog-bg)" },
   { id: "inprogress", label: "진행 중", hint: "", color: "var(--st-prog)", bg: "var(--st-prog-bg)" },
   { id: "waiting", label: "응답 대기", hint: "남의 답을 기다림", color: "var(--st-wait)", bg: "var(--st-wait-bg)" },
-  { id: "toask", label: "질문할 것", hint: "누구에게", color: "var(--st-ask)", bg: "var(--st-ask-bg)" },
   { id: "hold", label: "보류·나중에", hint: "", color: "var(--st-hold)", bg: "var(--st-hold-bg)" },
   { id: "done", label: "완료", hint: "", color: "var(--st-done)", bg: "var(--st-done-bg)" },
 ];
@@ -158,10 +157,6 @@ const tasks = [
   { id: uid(), title: "보안팀 — 데이터 접근 권한 검토 요청 회신", status: "waiting", priority: "med", due: d(-1), people: ["보안팀"], project: "p_platform", meetingId: null, notes: "마이그레이션 위해 prod read 권한 필요. 티켓 SEC-1203. 어제까지 받기로 했는데 지연.", checklist: [], bookmarkIds: [], order: 1 },
   { id: uid(), title: "디자인 시안 2차 — 윤디자이너 전달 대기", status: "waiting", priority: "low", due: d(3), people: ["윤디자이너"], project: "p_platform", meetingId: null, notes: "알림 설정 화면. 목요일 공유 예정.", checklist: [], bookmarkIds: ["b_figma"], order: 2 },
 
-  // 질문할 것
-  { id: uid(), title: "교육비 정책 — Rust 스터디 지원 가능 여부 (HR)", status: "toask", priority: "low", due: null, people: ["데이터팀"], project: "p_lead", meetingId: null, notes: "이선임이 요청. HR 위키 확인 후 안 되면 직접 문의.", checklist: [], bookmarkIds: ["b_hr"], order: 0 },
-  { id: uid(), title: "온콜 보상 정책 — 박매니저에게 확인", status: "toask", priority: "med", due: null, people: ["박매니저"], project: "p_lead", meetingId: null, notes: "다른 팀은 야간 온콜 어떻게 보상하는지. 우리 팀 정책 개선 참고용.", checklist: [], bookmarkIds: [], order: 1 },
-
   // 백로그
   { id: uid(), title: "팀 스프린트 회고 액션아이템 정리 & 공유", status: "backlog", priority: "med", due: d(5), people: [], project: "p_admin", meetingId: "m_weekly", notes: "QA 병목 개선 액션 포함.", checklist: [], bookmarkIds: [], order: 0 },
   { id: uid(), title: "신규 입사자 온보딩 플랜 템플릿화", status: "backlog", priority: "low", due: null, people: [], project: "p_hire", meetingId: null, notes: "최주임 온보딩 경험 토대로 체크리스트 표준화.", checklist: [{ id: uid(), text: "1주차 셋업 체크리스트", done: false }, { id: uid(), text: "30/60/90 목표 템플릿", done: false }], bookmarkIds: [], order: 1 },
@@ -207,12 +202,18 @@ export const defaultState = {
   quarter: "2026 Q2",
 };
 
+// 폐지된 'toask'(질문할 것) 컬럼의 잔여 카드를 제거
+function migrate(state) {
+  state.tasks = state.tasks.filter((t) => t.status !== "toask");
+  return state;
+}
+
 export function load() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === defaultState.version) return parsed;
+      if (parsed && parsed.version === defaultState.version) return migrate(parsed);
     }
   } catch (e) { /* ignore */ }
   return JSON.parse(JSON.stringify(defaultState));
