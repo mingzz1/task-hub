@@ -130,6 +130,7 @@ export default function App() {
   }));
 
   const addBookmark = (data) => setState((s) => ({ ...s, bookmarks: [{ id: uid(), taskIds: [], ...data }, ...s.bookmarks] }));
+  const updateBookmark = (id, patch) => setState((s) => ({ ...s, bookmarks: s.bookmarks.map((b) => b.id === id ? { ...b, ...patch } : b) }));
   const deleteBookmark = (id) => setState((s) => ({ ...s, bookmarks: s.bookmarks.filter((b) => b.id !== id), tasks: s.tasks.map((t) => ({ ...t, bookmarkIds: (t.bookmarkIds || []).filter((x) => x !== id) })) }));
 
   // ---- bookmark categories ----
@@ -282,7 +283,7 @@ export default function App() {
           onAddSession: addSession, onUpdateSession: updateSession, onDeleteSession: deleteSession,
         }) : null,
         view === "bookmarks" ? React.createElement(BookmarksView, {
-          state, query, onAddBookmark: addBookmark, onDeleteBookmark: deleteBookmark, onOpenTask: openTask,
+          state, query, onAddBookmark: addBookmark, onUpdateBookmark: updateBookmark, onDeleteBookmark: deleteBookmark, onOpenTask: openTask,
           onAddCategory: addBmCategory, onUpdateCategory: updateBmCategory, onDeleteCategory: deleteBmCategory,
         }) : null,
       ),

@@ -21,13 +21,15 @@ function Swatches({ value, onPick }) {
     })));
 }
 
-export function BookmarksView({ state, query, onAddBookmark, onDeleteBookmark, onOpenTask,
+export function BookmarksView({ state, query, onAddBookmark, onUpdateBookmark, onDeleteBookmark, onOpenTask,
                                 onAddCategory, onUpdateCategory, onDeleteCategory }) {
   const [filter, setFilter] = useState("all");
   const [adding, setAdding] = useState(false);
   const [form, setForm] = useState({ title: "", url: "", category: (state.bmCategories[0] || {}).id || "", note: "" });
   const [catForm, setCatForm] = useState(null); // null | { name, color }
   const [editCatId, setEditCatId] = useState(null);
+  const [editBmId, setEditBmId] = useState(null); // 편집 중인 북마크 id
+  const [editForm, setEditForm] = useState(null); // { title, url, category, note }
   const q = query.trim().toLowerCase();
 
   const linkedTasks = (bid) => state.tasks.filter((t) => (t.bookmarkIds || []).includes(bid));
@@ -71,7 +73,32 @@ export function BookmarksView({ state, query, onAddBookmark, onDeleteBookmark, o
     onDeleteCategory(c.id);
   };
 
+  const startEdit = (b) => { setEditBmId(b.id); setEditForm({ title: b.title, url: b.url, category: b.category || "", note: b.note || "" }); };
+  const cancelEdit = () => { setEditBmId(null); setEditForm(null); };
+  const submitEdit = () => {
+    if (!editForm.title.trim()) return;
+    onUpdateBookmark(editBmId, {
+      title: editForm.title.trim(),
+      url: editForm.url.replace(/^https?:\/\//, ""),
+      category: editForm.category || null,
+      note: editForm.note,
+    });
+    cancelEdit();
+  };
+
+  const bmEditRow = (b) => React.createElement("div", { className: "bm-addform", key: b.id, style: { margin: "2px 0" } },
+    React.createElement("input", { className: "input", placeholder: "제목", value: editForm.title, autoFocus: true, onChange: (e) => setEditForm({ ...editForm, title: e.target.value }), onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submitEdit(); if (e.key === "Escape") cancelEdit(); } }),
+    React.createElement("input", { className: "input", placeholder: "URL (예: wiki.acme.internal/...)", value: editForm.url, onChange: (e) => setEditForm({ ...editForm, url: e.target.value }), onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submitEdit(); if (e.key === "Escape") cancelEdit(); } }),
+    React.createElement("select", { className: "selectbox", value: editForm.category, onChange: (e) => setEditForm({ ...editForm, category: e.target.value }) },
+      state.bmCategories.map((c) => React.createElement("option", { key: c.id, value: c.id }, c.name)),
+      React.createElement("option", { value: "" }, "미분류")),
+    React.createElement("input", { className: "input", placeholder: "메모 (선택)", value: editForm.note, onChange: (e) => setEditForm({ ...editForm, note: e.target.value }), onKeyDown: (e) => { if (e.key === "Enter" && !e.nativeEvent.isComposing) submitEdit(); if (e.key === "Escape") cancelEdit(); } }),
+    React.createElement("div", { style: { gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: 8 } },
+      React.createElement("button", { className: "btn btn-ghost btn-sm", onClick: cancelEdit }, "취소"),
+      React.createElement("button", { className: "btn btn-primary btn-sm", onClick: submitEdit }, "저장")));
+
   const bmRow = (b, color) => {
+    if (editBmId === b.id) return bmEditRow(b);
     const links = linkedTasks(b.id);
     return React.createElement("div", { className: "bm-row", key: b.id },
       React.createElement("a", { className: "bm-row-main", href: "https://" + b.url, target: "_blank", rel: "noreferrer" },
@@ -86,7 +113,9 @@ export function BookmarksView({ state, query, onAddBookmark, onDeleteBookmark, o
           links.slice(0, 2).map((t) => React.createElement("button", { key: t.id, className: "bm-task-pill", onClick: () => onOpenTask(t.id), title: t.title }, t.title)),
           links.length > 2 ? React.createElement("span", { className: "muted", style: { fontSize: 11 } }, `+${links.length - 2}`) : null) :
           React.createElement("span", { className: "muted", style: { fontSize: 11 } }, "연결 없음")),
-      React.createElement("button", { className: "bm-row-del", onClick: () => onDeleteBookmark(b.id), title: "삭제" }, React.createElement(Icons.Trash, { size: 14 })));
+      React.createElement("span", { className: "bm-row-actions" },
+        React.createElement("button", { className: "bm-row-act", onClick: () => startEdit(b), title: "편집" }, React.createElement(Icons.Edit, { size: 14 })),
+        React.createElement("button", { className: "bm-row-act danger", onClick: () => onDeleteBookmark(b.id), title: "삭제" }, React.createElement(Icons.Trash, { size: 14 }))));
   };
 
   const catHead = (c) => {
