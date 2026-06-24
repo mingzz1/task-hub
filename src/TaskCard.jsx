@@ -1,6 +1,6 @@
 /* TaskCard — board card */
 import React from "react";
-import { ProjectTag, DueBadge, AvatarStack, PRI } from "./primitives.jsx";
+import { ProjectTag, DueBadge, AvatarStack, PRI, fmtDue } from "./primitives.jsx";
 import { Icons } from "./icons.jsx";
 
 export function TaskCard({ task, project, meeting, bookmarkCount, onOpen, onToggleDone, dragHandlers, dragging }) {
@@ -23,9 +23,13 @@ export function TaskCard({ task, project, meeting, bookmarkCount, onOpen, onTogg
       }, isDone ? React.createElement(Icons.Check, { size: 11 }) : null),
       React.createElement("div", { className: "card-title" + (isDone ? " done" : "") }, task.title),
     ),
-    (project || task.due) ? React.createElement("div", { className: "card-meta" },
+    // 완료 카드는 마감일(지났어도) 대신 완료일을 표시 — 완료된 일에 빨간 경고는 의미 없음
+    (project || task.due || (isDone && task.completedAt)) ? React.createElement("div", { className: "card-meta" },
       project ? React.createElement(ProjectTag, { project }) : null,
-      task.due ? React.createElement(DueBadge, { iso: task.due }) : null,
+      isDone
+        ? (task.completedAt ? React.createElement("span", { className: "due normal" },
+            React.createElement(Icons.Check, { size: 11 }), fmtDue(task.completedAt) + " 완료") : null)
+        : (task.due ? React.createElement(DueBadge, { iso: task.due }) : null),
     ) : null,
     (task.people.length || checklist.length || meeting || bookmarkCount) ?
       React.createElement("div", { className: "card-foot" },
